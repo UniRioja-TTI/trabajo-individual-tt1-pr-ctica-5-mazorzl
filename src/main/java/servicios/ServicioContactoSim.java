@@ -26,16 +26,22 @@ public class ServicioContactoSim implements InterfazContactoSim {
 
         Entidad e1 = new Entidad();
         e1.setId(1);
-        e1.setName("Nombre uno");
-        e1.setDescripcion("Nombre ejemplo");
+        e1.setName("Alfa");
+        e1.setDescripcion("Primera entidad de simulación");
 
         Entidad e2 = new Entidad();
         e2.setId(2);
-        e2.setName("Nombre dos");
-        e2.setDescripcion("Nombre ejemplo");
+        e2.setName("Beta");
+        e2.setDescripcion("Segunda entidad de simulación");
+
+        Entidad e3 = new Entidad();
+        e3.setId(3);
+        e3.setName("Gamma");
+        e3.setDescripcion("Tercera entidad de simulación");
 
         entidades.add(e1);
         entidades.add(e2);
+        entidades.add(e3);
     }
 
     @Override
@@ -46,6 +52,7 @@ public class ServicioContactoSim implements InterfazContactoSim {
 
             Solicitud solicitud = new Solicitud();
             List<Integer> cantidades = new ArrayList<>(sol.getNums().values());
+            
             List<String> nombres = entidades.stream()
                     .map(Entidad::getName)
                     .collect(Collectors.toList());
@@ -68,7 +75,7 @@ public class ServicioContactoSim implements InterfazContactoSim {
     public DatosSimulation descargarDatos(int ticket) {
         try {
             ResultadosApi api = new ResultadosApi();
-           api.getApiClient().setBasePath("http://consumible:8080");
+            api.getApiClient().setBasePath("http://consumible:8080");
 
             ResultsResponse respuesta = api.resultadosPost("usuario", ticket);
 
