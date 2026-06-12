@@ -48,7 +48,7 @@ public class ServicioContactoSim implements InterfazContactoSim {
     public int solicitarSimulation(DatosSolicitud sol) {
         try {
             SolicitudApi api = new SolicitudApi();
-            api.getApiClient().setBasePath("http://consumible:8080");
+            api.getApiClient().setBasePath("http://localhost:8080");
 
             List<String> nombres = new ArrayList<>();
             List<Integer> cantidades = new ArrayList<>();
@@ -79,7 +79,7 @@ public class ServicioContactoSim implements InterfazContactoSim {
             ResultadosApi api = new ResultadosApi();
             api.getApiClient().setBasePath("http://localhost:8080");
 
-            ResultsResponse respuesta = api.resultadosPost("usuario", ticket);
+            ResultsResponse respuesta = api.resultadosPost("nombreUsuario", ticket);
 
             if (respuesta == null || respuesta.getData() == null)
                 return new DatosSimulation();
