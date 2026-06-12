@@ -6,16 +6,16 @@ import modelo.DatosSolicitud;
 import modelo.Entidad;
 import modelo.Punto;
 import org.springframework.stereotype.Service;
-import utilidades.api.ResultadosApi;
-import utilidades.api.SolicitudApi;
-import utilidades.model.ResultsResponse;
-import utilidades.model.Solicitud;
+import io.swagger.client.api.ResultadosApi;
+import io.swagger.client.api.SolicitudApi;
+import io.swagger.client.model.ResultsResponse;
+import io.swagger.client.model.Solicitud;
+import io.swagger.client.model.SolicitudResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class ServicioContactoSim implements InterfazContactoSim {
@@ -48,20 +48,22 @@ public class ServicioContactoSim implements InterfazContactoSim {
     public int solicitarSimulation(DatosSolicitud sol) {
         try {
             SolicitudApi api = new SolicitudApi();
-            api.getApiClient().setBasePath("http://consumible:8080"); 
+            api.getApiClient().setBasePath("http://consumible:8080");
+
+            List<String> nombres = new ArrayList<>();
+            List<Integer> cantidades = new ArrayList<>();
+
+            for (Entidad entidad : entidades) {
+                nombres.add(entidad.getName());
+                int cantidad = sol.getNums().getOrDefault(entidad.getId(), 0);
+                cantidades.add(cantidad);
+            }
 
             Solicitud solicitud = new Solicitud();
-            List<Integer> cantidades = new ArrayList<>(sol.getNums().values());
-            
-            List<String> nombres = entidades.stream()
-                    .map(Entidad::getName)
-                    .collect(Collectors.toList());
-
             solicitud.setCantidadesIniciales(cantidades);
             solicitud.setNombreEntidades(nombres);
 
-            utilidades.model.SolicitudResponse respuesta =
-                    api.solicitudSolicitarPost("usuario", solicitud);
+            SolicitudResponse respuesta = api.solicitudSolicitarPost(solicitud, "usuario");
 
             if (respuesta == null) return -1;
             return respuesta.getTokenSolicitud() != null ? respuesta.getTokenSolicitud() : -1;
@@ -75,7 +77,7 @@ public class ServicioContactoSim implements InterfazContactoSim {
     public DatosSimulation descargarDatos(int ticket) {
         try {
             ResultadosApi api = new ResultadosApi();
-            api.getApiClient().setBasePath("http://consumible:8080");
+            api.getApiClient().setBasePath("http://localhost:8080");
 
             ResultsResponse respuesta = api.resultadosPost("usuario", ticket);
 
